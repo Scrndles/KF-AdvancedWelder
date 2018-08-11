@@ -1,0 +1,5 @@
+add vest class detection
+add self weld
+add zed welding
+possibly make firerate bonus apply only to armor welding
+make it replace welder on purchase and restore welder when dropped

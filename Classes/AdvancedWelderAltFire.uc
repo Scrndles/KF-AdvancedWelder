@@ -7,7 +7,6 @@ var bool bSelfWeldMode;
 //allow fire on doors for unwelding, and allow firing for no target if has armor welding ammo and can self weld
 function bool AllowFire()
 {
-    //local ScrnHumanPawn localSHP;
 	local KFDoorMover WeldTarget;
 
 	WeldTarget = GetDoor();
@@ -15,37 +14,21 @@ function bool AllowFire()
     // Can't use welder, if no door.
 	if(WeldTarget != none)
     {
-        bSelfWeldMode = false;
+
         if (WeldTarget.WeldStrength <= 0) // Cannot unweld a door that's already unwelded
             return false;
         else
             return Weapon.AmmoAmount(1) >= AmmoPerFire ; //replaced thismodenum with 0 to make unwelding actually depend on rechargable ammo (also retain only needs 15 energy behaviour)
     }
     //if there is no door, do check if armor can be added to allow self weld
-    if (CachedSelfHealee.AddShieldStrength(1))
+    if ( ScrnHumanPawn(Instigator).ShieldStrength < ScrnHumanPawn(Instigator).GetShieldStrengthMax()) //armor can be added
     {
         bSelfWeldMode = true;
-        return Weapon.AmmoAmount(0) >= 1 ; 
+        return Weapon.AmmoAmount(0) >= 1; //check if has ammo
     }
+    bSelfWeldMode = false;
 }
-/*
-function bool CanFindHealee()
-{
-    local ScrnHumanPawn localSHP;
 
-    //firstly, disallow finding a healee if we don't have enough secondary ammo
-    if (Weapon.AmmoAmount(0) == 0 )
-    {
-        return false;
-    }
-    
-    //next, check if we can have more armor
-    if (localSHP.AddShieldStrength(1) == true )
-    {
-        return true;
-    }
-}
-*/
 //added to add consume ammo
 simulated event ModeDoFire()
 {
@@ -183,30 +166,24 @@ simulated function Timer()
 		}
         else if (HitActor == none && bSelfWeldMode)
         {
-          //CachedSelfHealee = none;
-            //if( CachedSelfHealee.AddShieldStrength(1) != false && Instigator != none && Level.NetMode!=NM_Client)
-            //{
+            if( Instigator != none && Level.NetMode!=NM_Client)
+            {
                 AdjustedLocation = Hitlocation;
                 AdjustedLocation.Z = (Hitlocation.Z - 0.15 * Instigator.collisionheight);
-                Spawn(class'KFWelderHitEffect',,, AdjustedLocation, rotator(HitLocation - StartTrace)); 			
+                //Spawn(class'KFWelderHitEffect',,, AdjustedLocation, rotator(HitLocation - StartTrace)); //disabled because it's broken for self welds
                 SelfWeld();
-            //}
+            }
         }
 	}
-
 }
 
 Function SelfWeld()
 {
-    local int MyDamage;
-
-    MyDamage = 1;
-
-    //Weapon.ConsumeAmmo(ThisModeNum, AmmoPerFire);
-    Instigator.ShieldStrength+= MyDamage; //to max of 100
-    if ( Instigator.ShieldStrength >= 100) 
+    Weapon.ConsumeAmmo(0, 1); //consume 1 ammo per self weld
+    ScrnHumanPawn(Instigator).AddShieldStrength(1); //add 1 shield per fire
+    if ( ScrnHumanPawn(Instigator).ShieldStrength >= ScrnHumanPawn(Instigator).GetShieldStrengthMax()) 
     {
-        Instigator.ShieldStrength = 100;
+        ScrnHumanPawn(Instigator).ShieldStrength = ScrnHumanPawn(Instigator).ShieldStrengthMax; //make sure shield doesn't go above max
     }
 }
 

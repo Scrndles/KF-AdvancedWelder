@@ -1,5 +1,4 @@
-add vest class detection
-add self weld
-add zed welding
-possibly make firerate bonus apply only to armor welding
+tidy up advancedwelder.uc, add new text display
 make it replace welder on purchase and restore welder when dropped
+fix self weld effect spawn
+add burn damage class properly

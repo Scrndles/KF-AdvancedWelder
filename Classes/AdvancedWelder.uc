@@ -325,6 +325,7 @@ defaultproperties
     AttachmentClass=Class'AdvancedWelderAttachment'
     IconCoords=(X1=169,Y1=39,X2=241,Y2=77)
     ItemName="Advanced Welder"
+    Description="An Advanced Welder that can weld doors, armor and zeds."
     Mesh=SkeletalMesh'KF_Weapons_Trip.Welder_Trip'
     AmbientGlow=2
     BackColor=(R=128,B=128,G=128,A=255)

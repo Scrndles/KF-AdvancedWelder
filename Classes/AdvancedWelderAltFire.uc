@@ -57,7 +57,7 @@ function bool AllowFire()
         return Weapon.AmmoAmount(0) >= 1 ; 
     }
 }
-
+/*
 function bool CanFindHealee()
 {
     local ScrnHumanPawn localSHP;
@@ -74,7 +74,7 @@ function bool CanFindHealee()
         return true;
     }
 }
-
+*/
 //added to add consume ammo
 simulated event ModeDoFire()
 {
